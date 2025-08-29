@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elch Emil – Reise-Tracker (CZ ➜ AT)</title>
+  <meta name="description" content="Interaktive Karte der Reise des Elchs Emil von Tschechien nach Österreich anhand öffentlich dokumentierter Sichtungen." />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body { height:100%; margin:0; }
+    .leaflet-container { z-index: 10; }
+    #map { height: calc(100vh - 420px); min-height: 360px; }
+    .chip { display:inline-flex; align-items:center; padding:2px 8px; border-radius:9999px; font-size:12px; line-height:1; border:1px solid transparent; }
+    .modal-backdrop { position:fixed; inset:0; display:none; background:rgba(0,0,0,.75); z-index:1000; }
+    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1001; }
+    .modal.open, .modal-backdrop.open { display:flex; }
+    .insta-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
+    .insta-embed { background:#0b0b0b; border:1px solid #27272a; border-radius:16px; padding:8px; }
+    .btn { border:1px solid #3f3f46; padding:.375rem .625rem; border-radius:.5rem; background:#0a0a0a; color:#e4e4e7; }
+    .btn:hover { background:#18181b; }
+    .news-card { border:1px solid #27272a; border-radius:16px; padding:12px; background:#0b0b0b; }
+    .news-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+    /* Cookie-Banner */
+    #cookie-banner { position:fixed; left:50%; transform:translateX(-50%); bottom:1rem; z-index:1100;
+      max-width:44rem; background:rgba(24,24,27,.95); border:1px solid #27272a; border-radius:1rem; padding:1rem; box-shadow:0 10px 30px rgba(0,0,0,.35); }
+    #cookie-banner.hidden { display:none; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-50">
+  <!-- NAV -->
+  <header class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-emerald-500/20 ring-1 ring-emerald-400/30">🫎</span>
+        <div class="leading-tight">
+          <div class="text-sm uppercase tracking-widest text-zinc-400">Live-Tracker</div>
+          <h1 class="text-lg font-semibold">Elch Emil – CZ ➜ AT</h1>
+        </div>
+      </div>
+      <nav class="text-sm">
+        <a href="impressum.html" class="rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white">Impressum</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="mx-auto max-w-7xl px-4 mt-6 grid grid-cols-1 gap-4 md:grid-cols-[2fr,1fr]">
+    <div class="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <h2 class="text-lg font-semibold mb-2">Emil auf Wanderschaft</h2>
+      <p class="text-sm text-zinc-300">
+        Emil ist ein junger Elch, der im Sommer 2025 aus Tschechien über die Grenze nach Österreich wanderte.
+        Hier siehst du seine dokumentierten Sichtungen als Route auf der Karte – inkl. verlinkter Social-Posts.
+      </p>
+      <div class="mt-3 flex gap-2">
+        <span class="chip" style="background:#10b98122;border-color:#10b98155;color:#a7f3d0;">Quelle: Wikipedia</span>
+        <span class="chip" style="background:#3b82f622;border-color:#3b82f655;color:#bfdbfe;">Stand: Aug 2025</span>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 flex items-center justify-center">
+      <!-- Inline-IMG als Emil-Bild -->
+          <img src="moose_emil_hero.png" alt="Elch Emil" class="rounded-xl max-w-full h-auto" />
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <section class="mx-auto max-w-7xl px-4 pt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="col-span-2 flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
+      <label class="ml-auto inline-flex items-center gap-2 text-sm text-zinc-300">
+        <input id="filterAT" type="checkbox"
+               class="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-400" />
+        Nur Österreich zeigen
+      </label>
+    </div>
+    <div class="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3 text-sm">
+      <div class="flex items-baseline justify-between"><span class="text-zinc-400">Pfadlänge (Luftlinie)</span><strong id="stat-length" class="text-base">–</strong></div>
+      <div class="mt-1 flex items-baseline justify-between"><span class="text-zinc-400">Anzahl Knotenpunkte</span><strong id="stat-points" class="text-base">–</strong></div>
+    </div>
+  </section>
+
+  <!-- Layout -->
+  <div class="mx-auto max-w-7xl px-4 pb-12 pt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1fr,2fr]">
+    <aside class="max-h-[calc(100vh-420px)] overflow-auto rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
+      <h2 class="mb-3 text-lg font-semibold">Zeitlinie der Sichtungen</h2>
+      <ol id="timeline" class="space-y-3 text-sm"></ol>
+      <p class="mt-4 text-xs text-zinc-400">Quellen: Wikipedia-Eintrag „Emil (Elch)“ und verlinkte Social-Posts in den Popups.</p>
+    </aside>
+    <section class="overflow-hidden rounded-2xl border border-zinc-800">
+      <div id="map"></div>
+    </section>
+  </div>
+
+  <!-- Modal für Instagram-Posts -->
+  <div id="modal-backdrop" class="modal-backdrop"></div>
+  <div id="modal" class="modal" aria-modal="true" role="dialog">
+    <div class="mx-4 w-full max-w-5xl rounded-2xl border border-zinc-800 bg-zinc-900 p-4 shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 id="modal-title" class="text-base font-semibold">Sichtungen</h3>
+        <button id="modal-close" class="btn">Schließen</button>
+      </div>
+      <div id="modal-body" class="insta-grid"></div>
+    </div>
+  </div>
+
+  <!-- Cookie-Banner -->
+  <div id="cookie-banner" class="hidden">
+    <div class="text-sm text-zinc-200">
+      Diese Website verwendet <strong>Instagram-Embeds</strong>. Instagram kann Cookies setzen, um Inhalte (Reels/Posts)
+      einzubetten. Bitte stimme zu, damit die Beiträge direkt hier abgespielt werden können.
+    </div>
+    <div class="mt-3 flex gap-2 justify-end">
+      <button id="cookie-decline" class="btn">Ablehnen</button>
+      <button id="cookie-accept" class="btn">Akzeptieren</button>
+    </div>
+  </div>
+
+  <!-- AKTUELLE NEWS -->
+  <section class="mx-auto max-w-7xl px-4 pb-14">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-lg font-semibold">Aktuelle News</h2>
+      <small class="text-zinc-400">Quellen: ORF, Heute, Süddeutsche, MeinBezirk u. a.</small>
+    </div>
+    <div id="news-grid" class="news-grid"></div>
+  </section>
+
+  <footer class="mx-auto max-w-7xl px-4 pb-10 text-xs text-zinc-400">
+    <a class="underline hover:text-zinc-200" href="impressum.html">Impressum</a> · Kartenmaterial © OpenStreetMap-Mitwirkende
+  </footer>
+
+  <script>
+    // ------- Datenpunkte (nur Marker mit Koordinaten erscheinen auf der Karte) -------
+    const rawPoints = [
+      // CZ
+      { date: '2025-06-02', dateText: '2. Juni', place: 'Ludgeřovice', country: 'CZ', lat: 49.8904225, lon: 18.2400828 },
+      { date: '2025-06-19', dateText: '19. Juni', place: 'Martinov (Ostrava)', country: 'CZ', lat: 49.8546167, lon: 18.1807806 },
+      { date: '2025-06-29', dateText: '29. Juni', place: 'Lukov', country: 'CZ' },
+      { date: '2025-07-04', dateText: '4. Juli', place: 'Příluky', country: 'CZ' },
+      { date: '2025-07-05', dateText: '5. Juli', place: 'Želechovice nad Dřevnicí', country: 'CZ', lat: 49.21806, lon: 17.74750 },
+      { date: '2025-07-20', dateText: '20. Juli', place: 'Korytná', country: 'CZ', lat: 48.909, lon: 17.655 },
+      { date: '2025-07-22', dateText: '22. Juli', place: 'Nivnice', country: 'CZ', lat: 48.97472, lon: 17.64750 },
+      { date: '2025-08-02', dateText: '2. August', place: 'Hluk, bei Ostrožská Lhota', country: 'CZ', lat: 48.98806, lon: 17.52667 },
+      { date: '2025-08-03', dateText: '3. August', place: 'Veselí nad Moravou', country: 'CZ', lat: 48.95361, lon: 17.37639 },
+      { date: '2025-08-13', dateText: '13. August', place: 'Sudoměřice', country: 'CZ', lat: 48.861, lon: 17.282 },
+      { date: '2025-08-15', dateText: '15. August', place: 'Hodonín, Josefov', country: 'CZ', lat: 48.848, lon: 17.132 },
+      { date: '2025-08-17', dateText: '17. August', place: 'Břeclav', country: 'CZ', lat: 48.75889, lon: 16.88194 },
+
+      // AT
+      { date: '2025-08-18', dateText: '18. August', place: 'Großkrut (Niederösterreich)', country: 'AT', lat: 48.65, lon: 16.717 },
+      { date: '2025-08-19', dateText: '19. August', place: 'Mistelbach', country: 'AT', lat: 48.56667, lon: 16.56667,
+        posts: ['https://www.instagram.com/reel/DNkzIbMIqbX/'] },
+      { date: '2025-08-21', dateText: '21. August', place: 'Gaweinstal – Pellendorf', country: 'AT', lat: 48.4866667, lon: 16.555213 },
+      { date: '2025-08-22', dateText: '22. August', place: 'Harmannsdorf – Würnitz', country: 'AT', lat: 48.42927, lon: 16.42482,
+        posts: ['https://www.instagram.com/p/DNxGRD9UFfX/'] },
+      { date: '2025-08-23', dateText: '23. August', place: 'Korneuburg, Bisamberg', country: 'AT', lat: 48.34528, lon: 16.33306 },
+      { date: '2025-08-24', dateText: '24. August', place: 'Langenzersdorf (Überquerung der Donau)', country: 'AT', lat: 48.306944, lon: 16.355278,
+        posts: ['https://www.instagram.com/reel/DNxvOfQYlXy/', 'https://www.instagram.com/reel/DNyHJFn3PAQ/'] },
+      { date: '2025-08-25', dateText: '25. August', place: 'Sankt Andrä-Wördern – Hadersfeld', country: 'AT', lat: 48.32778, lon: 16.20944 },
+      { date: '2025-08-26', dateText: '26. August', place: 'Sankt Andrä-Wördern', country: 'AT', lat: 48.32778, lon: 16.20944 },
+      { date: '2025-08-27', dateText: '27. August', place: 'zwischen Chorherrn und Frauenhofen', country: 'AT', lat: 48.3063889, lon: 16.0772222 },
+      { date: '2025-08-28', dateText: '28. August', place: 'Baumgarten am Tullnerfeld – Freundorf', country: 'AT', lat: 48.2825, lon: 16.0394444 },
+      { date: '2025-08-29', dateText: '29. August', place: 'Pixendorf (Gemeinde Michelhausen) - Plankenberg', country: 'AT', lat: 48.287900, lon: 15.976500 }
+    ];
+
+    // News (statisch)
+    const NEWS = [
+      { date: '2025-08-29', source: 'ORF NÖ', title: 'Feuerwehr versorgte Elch Emil mit Wasser', url: 'https://noe.orf.at/stories/3319496/' },
+      { date: '2025-08-29', source: 'Heute.at', title: 'Elch Emil sorgt für Großeinsatz in Niederösterreich', url: 'https://www.heute.at/s/elch-emil-sorgt-fuer-grosseinsatz-in-niederoesterreich-120127558' },
+      { date: '2025-08-27', source: 'ORF NÖ', title: 'Elch Emil weiter „Wahlniederösterreicher“', url: 'https://noe.orf.at/stories/3319288/' },
+      { date: '2025-08-26', source: 'Süddeutsche Zeitung', title: 'Elch Emil: Auf Abenteuerreise durch Österreich', url: 'https://www.sueddeutsche.de/wissen/elch-emil-oesterreich-li.3304038' },
+      { date: '2025-08-26', source: 'Heute.at', title: 'Emils Irrweg: Elch legte schon mehr als 200 km zurück', url: 'https://www.heute.at/s/emils-irrweg-elch-legte-schon-mehr-als-200-km-zurueck-120126807' },
+      { date: '2025-08-27', source: 'Die Presse', title: 'Autostopp: Das wahrscheinlichste Ende für Emils Reise', url: 'https://www.diepresse.com/20036613/autostopp-das-wahrscheinlichste-ende-fuer-elch-emils-wundersame-reise' },
+      { date: '2025-08-28', source: 'MeinBezirk', title: 'Darum wandert der Star-Elch durch Niederösterreich', url: 'https://www.meinbezirk.at/niederoesterreich/c-lokales/darum-wandert-der-star-elch-durch-niederoesterreich_a7560782' }
+    ];
+
+    const colors = { CZ: '#60a5fa', SK: '#a78bfa', AT: '#f43f5e' };
+    let markers = []; let line; let map;
+    let instaLoaded = false;
+
+    const hasCoords = p => Number.isFinite(p.lat) && Number.isFinite(p.lon);
+
+    // Cookie consent
+    const banner = document.getElementById('cookie-banner');
+    function showBanner(){ banner.classList.remove('hidden'); }
+    function hideBanner(){ banner.classList.add('hidden'); }
+    function loadInstagramScript(){
+      if (instaLoaded) return;
+      const s = document.createElement('script');
+      s.src = 'https://www.instagram.com/embed.js';
+      s.async = true;
+      s.onload = ()=>{ instaLoaded = true; if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process(); };
+      document.body.appendChild(s);
+    }
+    function ensureInstagramReady(cb){
+      if (window.instgrm && window.instgrm.Embeds) { cb(); window.instgrm.Embeds.process(); return; }
+      loadInstagramScript();
+      const iv = setInterval(()=> {
+        if (window.instgrm && window.instgrm.Embeds) { clearInterval(iv); cb(); window.instgrm.Embeds.process(); }
+      }, 200);
+      setTimeout(()=>clearInterval(iv), 8000);
+    }
+    function acceptCookies(){
+      localStorage.setItem('cookieConsent','accepted'); hideBanner(); loadInstagramScript();
+    }
+    function declineCookies(){ localStorage.setItem('cookieConsent','declined'); hideBanner(); }
+    document.getElementById('cookie-accept').addEventListener('click', acceptCookies);
+    document.getElementById('cookie-decline').addEventListener('click', declineCookies);
+
+    // Modal helpers
+    const modal = document.getElementById('modal');
+    const backdrop = document.getElementById('modal-backdrop');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    function openModal(title, posts){
+      modalTitle.textContent = title;
+      modalBody.innerHTML = '';
+      const consent = localStorage.getItem('cookieConsent');
+
+      if (!posts || posts.length === 0) {
+        modalBody.innerHTML = '<p class="text-sm text-zinc-300">Keine verlinkten Posts für diesen Ort.</p>';
+      } else if (consent !== 'accepted') {
+        modalBody.innerHTML = `
+          <div class="text-sm text-zinc-200">Um Instagram-Posts anzuzeigen und abzuspielen, bitte Cookies akzeptieren.</div>
+          <div class="mt-3"><button id="accept-in-modal" class="btn">Cookies akzeptieren & Posts laden</button></div>`;
+        setTimeout(()=>{ const btn=document.getElementById('accept-in-modal'); if(btn) btn.onclick = ()=>{ acceptCookies(); openModal(title, posts); }; }, 0);
+      } else {
+        // Build embeds + Fallback-Link
+        posts.forEach(url=>{
+          const wrap = document.createElement('div');
+          wrap.className = 'insta-embed';
+          wrap.innerHTML = `
+            <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="margin:auto;"></blockquote>
+            <p class="mt-2 text-xs"><a class="underline" href="${url}" target="_blank" rel="noopener">Auf Instagram öffnen</a></p>`;
+          modalBody.appendChild(wrap);
+        });
+        // Falls embed.js noch nicht bereit ist: kurzer Lader
+        if (!(window.instgrm && window.instgrm.Embeds)) {
+          const loading = document.createElement('div');
+          loading.className='text-xs text-zinc-400'; loading.textContent='Lade Instagram…';
+          modalBody.appendChild(loading);
+          ensureInstagramReady(()=>loading.remove());
+        } else {
+          window.instgrm.Embeds.process();
+        }
+      }
+      backdrop.classList.add('open'); modal.classList.add('open');
+    }
+    function closeModal(){ modal.classList.remove('open'); backdrop.classList.remove('open'); }
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    function haversine(a, b){
+      const R=6371e3, toRad = d=>d*Math.PI/180;
+      const dφ = toRad(b.lat-a.lat), dλ = toRad(b.lon-a.lon);
+      const φ1 = toRad(a.lat), φ2 = toRad(b.lat);
+      const s = Math.sin(dφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(dλ/2)**2;
+      return 2*R*Math.asin(Math.sqrt(s));
+    }
+    function toKm(m){ return (m/1000).toFixed(1); }
+
+    function render(filterAT=false){
+      const dataAll = rawPoints.filter(p => filterAT ? p.country==='AT' : true);
+      const data = dataAll.filter(hasCoords).sort((a,b)=> (a.date||'').localeCompare(b.date||''));
+
+      // cleanup
+      if(line){ map.removeLayer(line); line=null; }
+      markers.forEach(m=>map.removeLayer(m)); markers=[];
+
+      const latlngs=[];
+      data.forEach((p)=>{
+        const ll=[p.lat,p.lon]; latlngs.push(ll);
+        const dateLabel = p.date ? new Date(p.date).toLocaleDateString('de-AT') : (p.dateText || 'Datum unbekannt');
+        const marker=L.circleMarker(ll,{radius:7,color:colors[p.country]||'#fff',weight:2,opacity:1,fillOpacity:0.25}).addTo(map);
+        marker.bindPopup(`
+          <div class="text-sm">
+            <div class="mb-1 text-xs uppercase tracking-wide text-zinc-400">${dateLabel}</div>
+            <div class="font-medium">${p.place}</div>
+            <button class="btn mt-2 js-open-insta" data-title="${p.place.replace(/"/g,'&quot;')} — ${dateLabel}" data-posts='${JSON.stringify(p.posts||[])}'>
+              Instagram-Posts anzeigen
+            </button>
+          </div>`);
+
+        // Robuste Anbindung: Button-Click im Popup
+        marker.on('popupopen', (ev) => {
+          const root = ev.popup.getElement();
+          const btn = root ? root.querySelector('.js-open-insta') : null;
+          if (btn) {
+            btn.addEventListener('click', () => {
+              const title = btn.getAttribute('data-title');
+              const posts = JSON.parse(btn.getAttribute('data-posts') || '[]');
+              openModal(title, posts);
+            }, { once:true });
+          }
+        });
+
+        markers.push(marker);
+      });
+
+      if(latlngs.length>=2){ line=L.polyline(latlngs,{color:'#f43f5e',weight:3,opacity:0.7}).addTo(map); }
+      if(latlngs.length) { map.fitBounds(latlngs,{padding:[30,30]}); }
+
+      // Stats
+      let dist=0;
+      for(let i=1;i<latlngs.length;i++){
+        const a={lat:latlngs[i-1][0],lon:latlngs[i-1][1]};
+        const b={lat:latlngs[i][0],lon:latlngs[i][1]};
+        dist+=haversine(a,b);
+      }
+      document.getElementById('stat-length').textContent = latlngs.length ? `${toKm(dist)} km` : '–';
+      document.getElementById('stat-points').textContent = `${data.length}`;
+
+      // Timeline (alle – auch ohne Koordinaten)
+      const list=document.getElementById('timeline'); list.innerHTML='';
+      dataAll.forEach((p)=>{
+        const dateLabel = p.date ? new Date(p.date).toLocaleDateString('de-AT') : (p.dateText || 'Datum unbekannt');
+        const li=document.createElement('li');
+        li.className='group rounded-xl border border-zinc-800 bg-zinc-900/60 p-3 hover:border-zinc-700 cursor-pointer';
+        li.innerHTML=`
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs text-zinc-400">${dateLabel}</div>
+              <div class="font-medium">${p.place}</div>
+            </div>
+            <span class="chip" style="background:${colors[p.country]}22;border-color:${colors[p.country]}55;color:${colors[p.country]}">${p.country}</span>
+          </div>`;
+        li.addEventListener('click',()=>openModal(p.place+' — '+dateLabel, p.posts||[]));
+        list.appendChild(li);
+      });
+    }
+
+    function renderNews() {
+      const box = document.getElementById('news-grid');
+      box.innerHTML = '';
+      NEWS.sort((a,b)=>b.date.localeCompare(a.date)).forEach(n => {
+        const el = document.createElement('article');
+        el.className = 'news-card';
+        el.innerHTML = `
+          <div class="text-xs text-zinc-400">${n.date} · ${n.source}</div>
+          <a class="block mt-1 text-sm font-medium underline hover:text-zinc-200" href="${n.url}" target="_blank" rel="noopener">
+            ${n.title}
+          </a>`;
+        box.appendChild(el);
+      });
+    }
+
+    window.addEventListener('load', () => {
+      map = L.map('map',{scrollWheelZoom:true, zoomControl:true}).setView([48.4,16.3], 9);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        maxZoom:19,
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+
+      // Cookie-Banner / Script-Laden je nach Entscheidung
+      const consent = localStorage.getItem('cookieConsent');
+      if (consent === 'accepted') loadInstagramScript();
+      if (!consent) showBanner();
+
+      document.getElementById('filterAT').addEventListener('change', (e)=>render(e.target.checked));
+      render(false);
+      renderNews();
+      setTimeout(()=>map.invalidateSize(), 200);
+    });
+  </script>
+</body>
+</html>
