@@ -10,7 +10,7 @@ Stay up to date on where Emil was last spotted and what’s currently making the
 - 📍 **Sightings**: Overview of the most recent confirmed reports of Emil.  
 - 📰 **News**: Automatically gathered news articles from trusted sources.  
 - 💬 **Social Posts**: Latest social media posts related to Emil.  
-- 🔄 Automatic updates (depending on configured data sources).  
+- 🔄 Automatic updates 
 - 🖥️ Simple web interface for visualization.  
 
 ---
