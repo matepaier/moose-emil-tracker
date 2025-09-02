@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="metaTitleImprint">Impressum – Elch Emil Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      .btn { border:1px solid #3f3f46; padding:.375rem .625rem; border-radius:.5rem; background:#0a0a0a; color:#e4e4e7; }
+      .btn:hover { background:#18181b; }
+      .lang-switcher button.active { border-color:#a1a1aa; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-50">
+  <header class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
+    <div class="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between gap-4">
+      <a href="index.html" class="rounded-xl px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white" data-i18n="backToMap">← Zur Karte</a>
+      <span class="text-sm uppercase tracking-widest text-zinc-400" data-i18n="imprintHeader">Impressum</span>
+      <div class="lang-switcher hidden md:flex items-center gap-1">
+        <button class="btn" data-lang="de">DE</button>
+        <button class="btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-4 pb-16 pt-10 prose prose-invert prose-zinc">
+    <h1><strong data-i18n="imprintTitle">Impressum</strong></h1>
+    <br>
+    <p>
+      <strong data-i18n="ownerLabel">Medieninhaber & verantwortlich für den Inhalt:</strong><br>
+      Matthias Paier · Stiwoll 145 · 8113 St. Oswald · Österreich<br>
+      E-mail: <a href="mailto:matthias.paier@gmail.com">matthias.paier@gmail.com</a>
+    </p><br>
+    <p><strong data-i18n="purposeTitle">Zweck der Website:</strong><br> <span data-i18n="purposeText">Visualisierung der öffentlich dokumentierten Wanderung des Elchs „Emil“ von Tschechien nach Österreich. Nicht amtlich, ohne Gewähr.</span></p>
+    <br>
+    <h2><strong data-i18n="sourcesLicenses">Quellen & Lizenzen</strong></h2>
+    <ul>
+      <li>Wikipedia: <a href="https://de.wikipedia.org/wiki/Emil_(Elch)" target="_blank" rel="noopener">Emil (Elch)</a></li>
+      <li data-i18n="igRights">Instagram-Embeds gemäß Plattform-Nutzungsbedingungen; Rechte an den Inhalten liegen bei den jeweiligen Urheber:innen.</li>
+      <li data-i18n="osmRights">Kartenmaterial: © OpenStreetMap-Mitwirkende</li>
+    </ul>
+    <br>
+    <h2><strong data-i18n="privacyTitle">Datenschutz</strong></h2>
+    <p data-i18n="privacyText">Beim Anzeigen von Instagram-Embeds können Cookies von Instagram gesetzt werden. Die Einbindung erfolgt nur nach Ihrer Zustimmung über das Cookie-Banner.</p>
+    <br>
+    <h2><strong data-i18n="liabilityTitle">Haftungsausschluss</strong></h2>
+    <p data-i18n="liabilityText">Alle Angaben ohne Gewähr. Diese Website dient nur zu Informations- und Demonstrationszwecken. Irrtümer und Änderungen vorbehalten.</p>
+  </main>
+
+  <script>
+    const I18N_IMPRINT = {
+      de: {
+        metaTitleImprint: "Impressum – Elch Emil Tracker",
+        backToMap: "← Zur Karte",
+        imprintHeader: "Impressum",
+        imprintTitle: "Impressum",
+        ownerLabel: "Medieninhaber & verantwortlich für den Inhalt:",
+        purposeTitle: "Zweck der Website:",
+        purposeText: "Visualisierung der öffentlich dokumentierten Wanderung des Elchs „Emil“ von Tschechien nach Österreich. Nicht amtlich, ohne Gewähr.",
+        sourcesLicenses: "Quellen & Lizenzen",
+        igRights: "Instagram-Embeds gemäß Plattform-Nutzungsbedingungen; Rechte an den Inhalten liegen bei den jeweiligen Urheber:innen.",
+        osmRights: "Kartenmaterial: © OpenStreetMap-Mitwirkende",
+        privacyTitle: "Datenschutz",
+        privacyText: "Beim Anzeigen von Instagram-Embeds können Cookies von Instagram gesetzt werden. Die Einbindung erfolgt nur nach Ihrer Zustimmung über das Cookie-Banner.",
+        liabilityTitle: "Haftungsausschluss",
+        liabilityText: "Alle Angaben ohne Gewähr. Diese Website dient nur zu Informations- und Demonstrationszwecken. Irrtümer und Änderungen vorbehalten."
+      },
+      en: {
+        metaTitleImprint: "Imprint – Moose Emil Tracker",
+        backToMap: "← Back to map",
+        imprintHeader: "Imprint",
+        imprintTitle: "Imprint",
+        ownerLabel: "Publisher & content responsible:",
+        purposeTitle: "Purpose of the website:",
+        purposeText: "Visualization of Moose “Emil”’s publicly documented journey from the Czech Republic to Austria. Not official; no guarantee.",
+        sourcesLicenses: "Sources & licenses",
+        igRights: "Instagram embeds according to platform terms; rights remain with the respective authors.",
+        osmRights: "Map data: © OpenStreetMap contributors",
+        privacyTitle: "Privacy",
+        privacyText: "When displaying Instagram embeds, Instagram may set cookies. Embeds are only loaded after your consent via the cookie banner.",
+        liabilityTitle: "Disclaimer",
+        liabilityText: "All information without guarantee. This website is for information and demonstration purposes only. Errors and changes reserved."
+      }
+    };
+    function applyI18nImprint(lang){
+      const d = I18N_IMPRINT[lang] || I18N_IMPRINT.en;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (d[key] != null) el.innerHTML = d[key];
+      });
+      document.querySelectorAll("title[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (d[key] != null) el.textContent = d[key];
+      });
+      document.documentElement.setAttribute("lang", lang === "de" ? "de" : "en");
+      document.querySelectorAll(".lang-switcher button").forEach(b => {
+        b.classList.toggle("active", b.dataset.lang === lang);
+      });
+      localStorage.setItem('lang', lang);
+    }
+    (function init(){
+      const saved = localStorage.getItem('lang');
+      let lang = saved || ((navigator.languages && navigator.languages[0]) || navigator.language || 'en');
+      lang = /^de(-|$)/i.test(lang) ? 'de' : 'en';
+      applyI18nImprint(lang);
+      document.querySelectorAll(".lang-switcher button").forEach(btn=>{
+        btn.addEventListener('click', ()=>applyI18nImprint(btn.dataset.lang));
+      });
+    })();
+  </script>
+</body>
+</html>
