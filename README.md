@@ -24,8 +24,6 @@ Stay up to date on where Emil was last spotted and what’s currently making the
 📰 **News**
 <img width="1595" height="427" alt="grafik" src="https://github.com/user-attachments/assets/69bdbbf0-5cf7-4eb8-98a6-827cb7feb56f" />
 
-💬 **Social Posts**
-<img width="445" height="867" alt="grafik" src="https://github.com/user-attachments/assets/2ec63b98-8d9a-4e93-96b0-18d21874d780" />
 
 ---
 
