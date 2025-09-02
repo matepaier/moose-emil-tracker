@@ -1,6 +1,6 @@
 # 🦌 Moose Emil Tracker
 
-The **Moose Emil Tracker** collects and displays the latest information about **Moose Emil**, including recent sightings, news articles, and social media posts.  
+The **Moose Emil Tracker** collects and displays the latest information about **Moose Emil** in Austria, including recent sightings, news articles, and social media posts.  
 Stay up to date on where Emil was last spotted and what’s currently making the headlines.  
 
 ---
@@ -15,7 +15,17 @@ Stay up to date on where Emil was last spotted and what’s currently making the
 ---
 
 ## 📸 Screenshot / Demo
-<img width="1597" height="617" alt="screenshot moose tracker" src="https://github.com/user-attachments/assets/4e97cdaf-7b41-4dff-acbd-cf05ee8aa17c" />
+🦌 **Hero Section**
+<img width="1607" height="492" alt="grafik" src="https://github.com/user-attachments/assets/748f4b4d-8d7a-4863-abe7-90d4b2adccb3" />
+
+📍 **Sightings**
+<img width="1585" height="598" alt="grafik" src="https://github.com/user-attachments/assets/40ecc190-9869-423a-8c14-11a1f5f94038" />
+
+📰 **News**
+<img width="1595" height="427" alt="grafik" src="https://github.com/user-attachments/assets/69bdbbf0-5cf7-4eb8-98a6-827cb7feb56f" />
+
+💬 **Social Posts**
+<img width="445" height="867" alt="grafik" src="https://github.com/user-attachments/assets/2ec63b98-8d9a-4e93-96b0-18d21874d780" />
 
 ---
 
