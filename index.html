@@ -25,16 +25,44 @@
     .btn:hover { background:#18181b; }
     .news-card { border:1px solid #27272a; border-radius:16px; padding:12px; background:#0b0b0b; }
     .news-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+
     /* Cookie-Banner */
     #cookie-banner { position:fixed; left:50%; transform:translateX(-50%); bottom:1rem; z-index:1100;
       max-width:44rem; background:rgba(24,24,27,.95); border:1px solid #27272a; border-radius:1rem; padding:1rem; box-shadow:0 10px 30px rgba(0,0,0,.35); }
     #cookie-banner.hidden { display:none; }
+
     /* Lang switcher */
     .lang-switcher button.active { border-color:#a1a1aa; }
+
     /* Footer icon buttons */
     .icon-btn { display:inline-flex; align-items:center; justify-content:center; height:2.25rem; width:2.25rem; border-radius:.75rem; border:1px solid #3f3f46; background:#0a0a0a; color:#e4e4e7; }
     .icon-btn:hover { background:#18181b; }
     .icon { width:1.1rem; height:1.1rem; }
+
+    /* Segmented filter */
+    .segmented { display:inline-flex; border:1px solid #3f3f46; background:#0a0a0a; border-radius:.75rem; padding:4px; gap:4px; }
+    .segmented button { font-size:.85rem; padding:.4rem .7rem; border-radius:.5rem; border:1px solid transparent; color:#e4e4e7; }
+    .segmented button:hover { background:#18181b; }
+    .segmented button.active { background:#1c1c1f; border-color:#63636a; }
+
+    /* --- Mobile optimizations for the filter bar --- */
+    @media (max-width: 640px) {
+      /* make the whole filter card sticky & touch-friendly */
+      .controls-card { position: sticky; top: .5rem; z-index: 40;
+        background: rgba(24,24,27,.90); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        border:1px solid #27272a; border-radius: .75rem; }
+
+      /* segmented becomes horizontally scrollable with snap */
+      #filterGroup { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch;
+        padding:6px; gap:6px; scroll-snap-type:x proximity; }
+      #filterGroup::-webkit-scrollbar { display:none; }
+
+      #filterGroup button { flex:0 0 auto; scroll-snap-align:start;
+        padding:.55rem .8rem; font-size:.95rem; }
+
+      /* keep label compact on phones */
+      .filter-label { display:none; }
+    }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-50">
@@ -53,7 +81,6 @@
           <button class="btn" data-lang="de">DE</button>
           <button class="btn" data-lang="en">EN</button>
         </div>
-        <!-- Impressum-Link aus dem Header entfernt (jetzt im Footer) -->
       </nav>
     </div>
   </header>
@@ -80,12 +107,15 @@
 
   <!-- Controls -->
   <section class="mx-auto max-w-7xl px-4 pt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-    <div class="col-span-2 flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
-      <label class="ml-auto inline-flex items-center gap-2 text-sm text-zinc-300">
-        <input id="filterAT" type="checkbox"
-               class="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-400" />
-        <span data-i18n="filterAT">Nur Österreich zeigen</span>
-      </label>
+    <div class="col-span-2 flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3 controls-card">
+      <span class="filter-label text-sm text-zinc-300" data-i18n="filterLabel">Filter:</span>
+      <div id="filterGroup" class="segmented w-full sm:w-auto sm:ml-auto" role="tablist" aria-label="Filter">
+        <button class="active" data-filter="all" role="tab" aria-selected="true" data-i18n="filterAll">Alle</button>
+        <button data-filter="AT" role="tab" aria-selected="false" data-i18n="filterAT">Nur Österreich</button>
+        <button data-filter="CZ" role="tab" aria-selected="false" data-i18n="filterCZ">Nur Tschechien</button>
+        <button data-filter="SK" role="tab" aria-selected="false" data-i18n="filterSK">Nur Slowakei</button>
+        <button data-filter="POSTS" role="tab" aria-selected="false" data-i18n="filterPosts">Nur Social-Posts</button>
+      </div>
     </div>
     <div class="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3 text-sm">
       <div class="flex items-baseline justify-between"><span class="text-zinc-400" data-i18n="statLength">Pfadlänge (Luftlinie)</span><strong id="stat-length" class="text-base">–</strong></div>
@@ -107,7 +137,7 @@
     </section>
   </div>
 
-  <!-- Modal für Instagram-Posts -->
+  <!-- Social-Posts -->
   <div id="modal-backdrop" class="modal-backdrop"></div>
   <div id="modal" class="modal" aria-modal="true" role="dialog">
     <div class="mx-4 w-full max-w-5xl rounded-2xl border border-zinc-800 bg-zinc-900 p-4 shadow-2xl">
@@ -131,16 +161,15 @@
     </div>
   </div>
 
-  <!-- AKTUELLE NEWS -->
+  <!-- NEWS -->
   <section class="mx-auto max-w-7xl px-4 pb-14">
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-lg font-semibold" data-i18n="newsTitle">Aktuelle News</h2>
-      <small class="text-zinc-400" data-i18n="newsSourcesHint">Quellen: ORF, Heute, Süddeutsche, MeinBezirk u. a.</small>
     </div>
     <div id="news-grid" class="news-grid"></div>
   </section>
 
-  <!-- FOOTER (gleiches Design wie Menüband) -->
+  <!-- FOOTER -->
   <footer class="border-t border-zinc-800 bg-zinc-950/80 backdrop-blur mt-4">
     <div class="mx-auto max-w-7xl px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -150,15 +179,12 @@
       </div>
       <div class="flex items-center gap-2">
         <a class="icon-btn" href="https://www.instagram.com/explore/tags/elchemil/" target="_blank" rel="noopener" aria-label="Instagram">
-          <!-- Instagram -->
           <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM18 6.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
         </a>
         <a class="icon-btn" href="https://twitter.com/search?q=Elch%20Emil" target="_blank" rel="noopener" aria-label="X (Twitter)">
-          <!-- X/Twitter -->
           <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3h4.3l5.3 7.5L17.7 3H21l-7.8 10.8L21 21h-4.3l-6-8.5L6.3 21H3l8-11.2L3 3z"/></svg>
         </a>
         <a class="icon-btn" href="https://github.com/yourname/elk-emil" target="_blank" rel="noopener" aria-label="GitHub">
-          <!-- GitHub -->
           <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.5.54-3.03-1.2-3.03-1.2-.45-1.14-1.1-1.44-1.1-1.44-.9-.62.07-.61.07-.61 1 .07 1.52 1.02 1.52 1.02.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.64-1.33-2-.23-4.1-1-4.1-4.45 0-.98.35-1.78.93-2.41-.09-.23-.4-1.16.09-2.42 0 0 .76-.24 2.49.92.72-.2 1.49-.29 2.26-.29.77 0 1.54.1 2.26.29 1.73-1.16 2.49-.92 2.49-.92.49 1.26.18 2.19.09 2.42.58.63.93 1.43.93 2.41 0 3.46-2.11 4.21-4.12 4.44.36.31.69.92.69 1.86 0 1.34-.01 2.42-.01 2.75 0 .26.18.57.69.47A10 10 0 0 0 12 2z" clip-rule="evenodd"/></svg>
         </a>
       </div>
@@ -178,7 +204,15 @@
         chipSource: "Quelle: Wikipedia",
         chipAsOf: "Stand: ",
         navImprint: "Impressum",
-        filterAT: "Nur Österreich zeigen",
+
+        /* Filter */
+        filterLabel: "Filter:",
+        filterAll: "Alle",
+        filterAT: "Nur Österreich",
+        filterCZ: "Nur Tschechien",
+        filterSK: "Nur Slowakei",
+        filterPosts: "Nur Social-Posts",
+
         statLength: "Pfadlänge (Luftlinie)",
         statPoints: "Anzahl Knotenpunkte",
         timelineTitle: "Zeitlinie der Sichtungen",
@@ -189,7 +223,7 @@
         cookieDecline: "Ablehnen",
         cookieAccept: "Akzeptieren",
         newsTitle: "Aktuelle News",
-        newsSourcesHint: "Quellen: ORF, Heute, Süddeutsche, MeinBezirk u. a.",
+        <!-- newsSourcesHint: "Quellen: ORF, Heute, Süddeutsche, MeinBezirk u. a.", -->
         footerImprint: "Impressum",
         footerMapAttribution: "Kartenmaterial © OpenStreetMap-Mitwirkende",
         popupBtn: "Instagram-Posts anzeigen",
@@ -207,7 +241,15 @@
         chipSource: "Source: Wikipedia",
         chipAsOf: "Updated: ",
         navImprint: "Imprint",
+
+        /* Filter */
+        filterLabel: "Filter:",
+        filterAll: "All",
         filterAT: "Show Austria only",
+        filterCZ: "Show Czechia only",
+        filterSK: "Show Slovakia only",
+        filterPosts: "Social posts only",
+
         statLength: "Path length (as-the-crow-flies)",
         statPoints: "Number of waypoints",
         timelineTitle: "Sightings timeline",
@@ -218,7 +260,7 @@
         cookieDecline: "Decline",
         cookieAccept: "Accept",
         newsTitle: "Latest News",
-        newsSourcesHint: "Sources: ORF, Heute, Süddeutsche, MeinBezirk, etc.",
+        <!-- newsSourcesHint: "Sources: ORF, Heute, Süddeutsche, MeinBezirk, etc.", -->
         footerImprint: "Imprint",
         footerMapAttribution: "Map data © OpenStreetMap contributors",
         popupBtn: "Show Instagram posts",
@@ -253,23 +295,46 @@
       });
       // update any dynamic labels already rendered later (e.g., popups) via globals
       window.__currentLang = lang;
+      // refresh active filter labels if necessary
+      decorateFilterButtons();
     }
 
     // ---------- Original data (dates kept as ISO strings) ----------
     const rawPoints = [
       // CZ
-      { date: '2025-06-02', dateText: '2. Juni', place: 'Ludgeřovice', country: 'CZ', lat: 49.8904225, lon: 18.2400828 },
-      { date: '2025-06-19', dateText: '19. Juni', place: 'Martinov (Ostrava)', country: 'CZ', lat: 49.8546167, lon: 18.1807806 },
-      { date: '2025-06-29', dateText: '29. Juni', place: 'Lukov', country: 'CZ' },
-      { date: '2025-07-04', dateText: '4. Juli', place: 'Příluky', country: 'CZ' },
-      { date: '2025-07-05', dateText: '5. Juli', place: 'Želechovice nad Dřevnicí', country: 'CZ', lat: 49.21806, lon: 17.74750 },
-      { date: '2025-07-20', dateText: '20. Juli', place: 'Korytná', country: 'CZ', lat: 48.909, lon: 17.655 },
-      { date: '2025-07-22', dateText: '22. Juli', place: 'Nivnice', country: 'CZ', lat: 48.97472, lon: 17.64750 },
-      { date: '2025-08-02', dateText: '2. August', place: 'Hluk, bei Ostrožská Lhota', country: 'CZ', lat: 48.98806, lon: 17.52667 },
-      { date: '2025-08-03', dateText: '3. August', place: 'Veselí nad Moravou', country: 'CZ', lat: 48.95361, lon: 17.37639 },
-      { date: '2025-08-13', dateText: '13. August', place: 'Sudoměřice', country: 'CZ', lat: 48.861, lon: 17.282 },
-      { date: '2025-08-15', dateText: '15. August', place: 'Hodonín, Josefov', country: 'CZ', lat: 48.848, lon: 17.132 },
-      { date: '2025-08-17', dateText: '17. August', place: 'Břeclav', country: 'CZ', lat: 48.75889, lon: 16.88194 },
+      { date: '2025-06-02', dateText: '2. Juni', place: 'Ludgeřovice', country: 'CZ', lat: 49.8844, lon: 18.2433 },
+      { date: '2025-06-19', dateText: '19. Juni', place: 'Martinov (Ostrava)', country: 'CZ', lat: 49.85455, lon: 18.18077 },
+      { date: '2025-06-22', dateText: '22. Juni', place: 'Zbyslavice', country: 'CZ', lat: 49.80534, lon: 18.07547 },
+      { date: '2025-06-22', dateText: '22. Juni', place: 'Bítov (okres Nový Jičín)', country: 'CZ', lat: 49.80048, lon: 18.04753 },
+      { date: '2025-06-29', dateText: '29. Juni', place: 'Lukov', country: 'CZ', lat: 49.29027, lon: 17.72960 },
+      { date: '2025-07-04', dateText: '4. Juli', place: 'Příluky (Zlín)', country: 'CZ', lat: 49.23330, lon: 17.71670 },
+      { date: '2025-07-05', dateText: '5. Juli', place: 'Želechovice nad Dřevnicí', country: 'CZ', lat: 49.21801, lon: 17.74739 },
+      { date: '2025-07-07', dateText: '7. Juli', place: 'Želechovice nad Dřevnicí', country: 'CZ', lat: 49.21801, lon: 17.74739 },
+      { date: '2025-07-11', dateText: '11. Juli', place: 'Želechovice nad Dřevnicí', country: 'CZ', lat: 49.21801, lon: 17.74739 },
+      { date: '2025-07-13', dateText: '13. Juli', place: 'Ludkovice', country: 'CZ', lat: 49.11474, lon: 17.72661 },
+      { date: '2025-07-13', dateText: '13. Juli', place: 'Biskupice (u Luhačovic)', country: 'CZ', lat: 49.08306, lon: 17.71056 },
+      { date: '2025-07-14', dateText: '14. Juli', place: 'Uherský Brod – Těšov', country: 'CZ', lat: 49.03269, lon: 17.67483 },
+      { date: '2025-07-15', dateText: '15. Juli', place: 'Boršice u Blatnice', country: 'CZ', lat: 48.93486, lon: 17.57100 },
+      { date: '2025-07-15', dateText: '15. Juli', place: 'Dolní Němčí', country: 'CZ', lat: 48.96944, lon: 17.58333 },
+      { date: '2025-07-16', dateText: '16. Juli', place: 'Javorník (okres Hodonín)', country: 'CZ', lat: 48.86208, lon: 17.53340 },
+      { date: '2025-07-20', dateText: '20. Juli', place: 'Korytná', country: 'CZ', lat: 48.94106, lon: 17.66528 },
+      { date: '2025-07-21', dateText: '21. Juli', place: 'Korytná', country: 'CZ', lat: 48.94106, lon: 17.66528 },
+      { date: '2025-07-22', dateText: '22. Juli', place: 'Nivnice', country: 'CZ', lat: 48.97464, lon: 17.64758 },
+      { date: '2025-07-23', dateText: '23. Juli', place: 'Nivnice', country: 'CZ', lat: 48.97464, lon: 17.64758 },
+      { date: '2025-08-02', dateText: '2. August', place: 'Hluk (bei Ostrožská Lhota)', country: 'CZ', lat: 48.98812, lon: 17.52669 },
+      { date: '2025-08-03', dateText: '3. August', place: 'Veselí nad Moravou', country: 'CZ', lat: 48.95363, lon: 17.37648 },
+      { date: '2025-08-05', dateText: '5. August', place: 'zwischen Veselí nad Moravou und Kozojídky', country: 'CZ', lat: 48.93610, lon: 17.38800 },
+      { date: '2025-08-11', dateText: '11. August', place: 'zwischen Tvarožná Lhota und Strážnice', country: 'CZ', lat: 48.88910, lon: 17.33810 },
+      { date: '2025-08-11', dateText: '11. August', place: 'Mlýnky (Rekreationsgebiet bei Lučina)', country: 'CZ', lat: 48.86250, lon: 17.39280 },
+      
+      //SK
+      { date: '2025-08-11', dateText: '11. August', place: 'Skalica', country: 'SK', lat: 48.84606, lon: 17.22786 },
+      
+      //CZ
+      { date: '2025-08-13', dateText: '13. August', place: 'Sudoměřice', country: 'CZ', lat: 48.86700, lon: 17.25700 },
+      { date: '2025-08-14', dateText: '14. August', place: 'zwischen Rohatec und Hodonín', country: 'CZ', lat: 48.86410, lon: 17.15990 },
+      { date: '2025-08-15', dateText: '15. August', place: 'Hodonín, Josefov', country: 'CZ', lat: 48.83300, lon: 17.01700 },
+      { date: '2025-08-17', dateText: '17. August', place: 'Břeclav', country: 'CZ', lat: 48.75897, lon: 16.88203 },
 
       // AT
       { date: '2025-08-18', dateText: '18. August', place: 'Großkrut (Niederösterreich)', country: 'AT', lat: 48.65, lon: 16.717 },
@@ -281,13 +346,13 @@
       { date: '2025-08-23', dateText: '23. August', place: 'Korneuburg, Bisamberg', country: 'AT', lat: 48.34528, lon: 16.33306 },
       { date: '2025-08-24', dateText: '24. August', place: 'Langenzersdorf (Überquerung der Donau)', country: 'AT', lat: 48.306944, lon: 16.355278,
         posts: ['https://www.instagram.com/reel/DNxvOfQYlXy/', 'https://www.instagram.com/reel/DNyHJFn3PAQ/'] },
-      { date: '2025-08-25', dateText: '25. August', place: 'Sankt Andrä-Wördern – Hadersfeld', country: 'AT', lat: 48.32778, lon: 16.20944 },
+      { date: '2025-08-25', dateText: '25. August', place: 'Sankt Andrä-Wördern – Hadersfeld', country: 'AT', lat: 48.336900, lon: 16.259400 },
       { date: '2025-08-26', dateText: '26. August', place: 'Sankt Andrä-Wördern', country: 'AT', lat: 48.32778, lon: 16.20944 },
-      { date: '2025-08-27', dateText: '27. August', place: 'zwischen Chorherrn und Frauenhofen', country: 'AT', lat: 48.3063889, lon: 16.0772222 },
+      { date: '2025-08-27', dateText: '27. August', place: 'Tulbing zwischen Chorherrn und Frauenhofen', country: 'AT', lat: 48.3063889, lon: 16.0772222 },
       { date: '2025-08-28', dateText: '28. August', place: 'Baumgarten am Tullnerfeld – Freundorf', country: 'AT', lat: 48.2825, lon: 16.0394444 },
       { date: '2025-08-29', dateText: '29. August', place: 'Pixendorf (Gemeinde Michelhausen) - Plankenberg', country: 'AT', lat: 48.287900, lon: 15.976500 },
       { date: '2025-08-30', dateText: '30. August', place: 'Würmla', country: 'AT', lat: 48.2566645, lon: 15.860300 },
-      { date: '2025-08-31', dateText: '31. August', place: 'Perschling,', country: 'AT', lat: 48.260200, lon: 15.795800 },
+      { date: '2025-08-31', dateText: '31. August', place: 'Perschling', country: 'AT', lat: 48.260200, lon: 15.795800 },
       { date: '2025-08-31', dateText: '31. August', place: 'Kapelln', country: 'AT', lat: 48.2584846, lon: 15.7564358 }
     ];
 
@@ -309,6 +374,7 @@
     let markers = []; let line; let map;
     let instaLoaded = false;
     window.__currentLang = "de";
+    let currentFilter = localStorage.getItem('filter') || 'all';
 
     const hasCoords = p => Number.isFinite(p.lat) && Number.isFinite(p.lon);
 
@@ -358,7 +424,6 @@
           <div class="mt-3"><button id="accept-in-modal" class="btn">${t('acceptAndLoad')}</button></div>`;
         setTimeout(()=>{ const btn=document.getElementById('accept-in-modal'); if(btn) btn.onclick = ()=>{ acceptCookies(); openModal(title, posts); }; }, 0);
       } else {
-        // Build embeds + Fallback-Link
         posts.forEach(url=>{
           const wrap = document.createElement('div');
           wrap.className = 'insta-embed';
@@ -392,8 +457,21 @@
     }
     function toKm(m){ return (m/1000).toFixed(1); }
 
-    function render(filterAT=false){
-      const dataAll = rawPoints.filter(p => filterAT ? p.country==='AT' : true);
+    function filterData(mode){
+      return rawPoints.filter(p => {
+        if (mode === 'AT') return p.country === 'AT';
+        if (mode === 'CZ') return p.country === 'CZ';
+        if (mode === 'SK') return p.country === 'SK';
+        if (mode === 'POSTS') return Array.isArray(p.posts) && p.posts.length > 0;
+        return true; // 'all'
+      });
+    }
+
+    function render(mode='all'){
+      currentFilter = mode;
+      localStorage.setItem('filter', currentFilter);
+
+      const dataAll = filterData(mode);
       const data = dataAll.filter(hasCoords).sort((a,b)=> (a.date||'').localeCompare(b.date||''));
 
       // cleanup
@@ -403,7 +481,6 @@
       const latlngs=[];
       data.forEach((p)=>{
         const ll=[p.lat,p.lon]; latlngs.push(ll);
-        // localized date label
         const locale = window.__currentLang === 'de' ? 'de-AT' : 'en-GB';
         const dateLabel = p.date ? new Date(p.date).toLocaleDateString(locale) : (p.dateText || (window.__currentLang==='de'?'Datum unbekannt':'Unknown date'));
         const marker=L.circleMarker(ll,{radius:7,color:colors[p.country]||'#fff',weight:2,opacity:1,fillOpacity:0.25}).addTo(map);
@@ -443,9 +520,9 @@
       }
       const unit = window.__currentLang==='de' ? ' km' : ' km';
       document.getElementById('stat-length').textContent = latlngs.length ? `${toKm(dist)}${unit}` : '–';
-      document.getElementById('stat-points').textContent = `${data.length}`;
+      document.getElementById('stat-points').textContent = `${dataAll.length}`;
 
-      // Timeline (alle – auch ohne Koordinaten)
+      // Timeline (entspricht Filter – auch ohne Koordinaten)
       const list=document.getElementById('timeline'); list.innerHTML='';
       dataAll.forEach((p)=>{
         const locale = window.__currentLang === 'de' ? 'de-AT' : 'en-GB';
@@ -463,6 +540,36 @@
         li.addEventListener('click',()=>openModal(p.place+' — '+dateLabel, p.posts||[]));
         list.appendChild(li);
       });
+
+      decorateFilterButtons();
+    }
+
+    // Filter UI wiring
+    function decorateFilterButtons(){
+      const group = document.getElementById('filterGroup');
+      if (!group) return;
+      group.querySelectorAll('button').forEach(btn=>{
+        const isActive = btn.dataset.filter === currentFilter;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        // Refresh labels according to language
+        const key = btn.getAttribute('data-i18n');
+        if (key && I18N[window.__currentLang] && I18N[window.__currentLang][key]) {
+          btn.textContent = I18N[window.__currentLang][key];
+        }
+      });
+    }
+
+    function initFilterUI(){
+      const group = document.getElementById('filterGroup');
+      group.addEventListener('click', (e)=>{
+        const btn = e.target.closest('button[data-filter]');
+        if (!btn) return;
+        const mode = btn.dataset.filter;
+        render(mode);
+      });
+      // initial state styling
+      decorateFilterButtons();
     }
 
     function renderNews() {
@@ -481,22 +588,18 @@
     }
 
     function initLang() {
-      // restore manual choice or auto-detect
       const saved = localStorage.getItem('lang');
       let lang = saved || ((navigator.languages && navigator.languages[0]) || navigator.language || 'en');
       lang = /^de(-|$)/i.test(lang) ? 'de' : 'en';
       applyI18n(lang);
-      // hook up buttons
       document.querySelectorAll('.lang-switcher button').forEach(btn => {
         btn.addEventListener('click', () => {
           const l = btn.dataset.lang;
           localStorage.setItem('lang', l);
           applyI18n(l);
-          // re-render parts that embed text (popups/timeline)
-          render(document.getElementById('filterAT').checked);
+          render(currentFilter);
         });
       });
-      // show switcher
       document.querySelector('.lang-switcher')?.classList.remove('hidden');
     }
 
@@ -516,8 +619,8 @@
       if (consent === 'accepted') loadInstagramScript();
       if (!consent) showBanner();
 
-      document.getElementById('filterAT').addEventListener('change', (e)=>render(e.target.checked));
-      render(false);
+      initFilterUI();
+      render(currentFilter);
       renderNews();
       setTimeout(()=>map.invalidateSize(), 200);
     });
