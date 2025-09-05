@@ -29,7 +29,7 @@ Stay up to date on where Emil was last spotted and what’s currently making the
 ---
 
 ## 🛠️ Usage
-https://matepaier.github.io/moose-emil-tracker/
+https://www.emilthemoose.com
 
 ---
 
