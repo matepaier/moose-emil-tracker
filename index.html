@@ -106,7 +106,7 @@
       <div class="mt-3 flex gap-2">
         <span class="chip" id="chip-source" style="background:#10b98122;border-color:#10b98155;color:#a7f3d0;" data-i18n="chipSource">Quelle: Wikipedia</span>
         <span class="chip" id="chip-updated" style="background:#3b82f622;border-color:#3b82f655;color:#bfdbfe;">
-          <span data-i18n="chipAsOf">Stand:</span>&nbsp;<span id="as-of-date">04 Sep 2025</span>
+          <span data-i18n="chipAsOf">Stand:</span>&nbsp;<span id="as-of-date">12 Sep 2025</span>
         </span>
       </div>
     </div>
@@ -364,11 +364,21 @@
       { date: '2025-08-30', dateText: '30. August', place: 'Würmla', country: 'AT', lat: 48.2566645, lon: 15.860300 },
       { date: '2025-08-31', dateText: '31. August', place: 'Perschling', country: 'AT', lat: 48.260200, lon: 15.795800 },
       { date: '2025-08-31', dateText: '31. August', place: 'Kapelln', country: 'AT', lat: 48.2584846, lon: 15.7564358 },
-      { date: '2025-09-02', dateText: '02. September', place: 'Maria Jeutendorf', country: 'AT', lat: 48.24454, lon: 15.74262 }
+      { date: '2025-09-02', dateText: '02. September', place: 'Maria Jeutendorf', country: 'AT', lat: 48.24454, lon: 15.74262 },
+      { "date": "2025-09-05", "dateText": "05. September", "place": "Pottenbrunn (Radlberg, St. Pölten)", "country": "AT", "lat": 48.24131, "lon": 15.70159 },
+      { "date": "2025-09-06", "dateText": "06. September", "place": "St. Pölten", "country": "AT", "lat": 48.20353, "lon": 15.63817 },
+      { "date": "2025-09-09", "dateText": "09. September", "place": "Melk", "country": "AT", "lat": 48.22737, "lon": 15.33186 },
+      { "date": "2025-09-09", "dateText": "09. September", "place": "Klein-Pöchlarn (Überquerung der Donau)", "country": "AT", "lat": 48.2202322, "lon": 15.2188862 },
+      { "date": "2025-09-10", "dateText": "10. September", "place": "Marbach an der Donau", "country": "AT", "lat": 48.216986, "lon": 15.1525413 },
+      { "date": "2025-09-10", "dateText": "10. September", "place": "Krummnußbaum (Donauuferbahn, Überquerung der Donau)", "country": "AT", "lat": 48.208864, "lon": 15.1639272 }
     ];
 
     // News (static – titles stay in original language)
     const NEWS = [
+      { date: '2025-09-12', source: 'NÖN', title: 'Soll Elch Emil in seine Heimat zurückgebracht werden?', url: 'https://www.noen.at/niederoesterreich/chronik-gericht/pro-kontra-soll-elch-emil-in-seine-heimat-zurueckgebracht-werden-489732215' },
+      { date: '2025-09-12', source: 'Kurier', title: 'Elch Emil: Warum seine Wanderung wie ein interaktives Spiel ist', url: 'https://kurier.at/chronik/niederoesterreich/emil-elch-spiel-john-haas-psychologie/403083435' },
+      { date: '2025-09-11', source: 'MeinBezirk', title: 'So gefährlich ist der Hype um Elch Emil', url: 'https://www.meinbezirk.at/c-lokales/so-gefaehrlich-ist-der-hype-um-elch-emil_a7600732' },
+      { date: '2025-09-10', source: 'DerStandard', title: 'Elch Emil offensichtlich auf dem Weg in den Norden', url: 'https://www.derstandard.at/story/3000000287199/elch-emil-offensichtlich-auf-dem-weg-in-den-norden' },
       { date: '2025-09-03', source: 'NÖN', title: 'Elch Emil schnupperte an der Landeshauptstadt', url: 'https://www.noen.at/st-poelten/st-poelten-besuch-elch-emil-schnupperte-an-der-landeshauptstadt-488593301' },
       { date: '2025-09-02', source: 'NÖN', title: 'Elch Emil hat den Mittelpunkt von NÖ erreicht', url: 'https://www.noen.at/herzogenburg/tierischer-besuch-elch-emil-hat-den-mittelpunkt-von-noe-erreicht-488386001' },
       { date: '2025-08-31', source: 'ORF', title: 'Elche derzeit wegen Emil „Hauptattraktion“', url: 'https://ooe.orf.at/stories/3319783/' },
@@ -617,7 +627,7 @@
 
     window.addEventListener('load', () => {
       // date in chip
-      document.getElementById('as-of-date').textContent = new Date('2025-09-04').toLocaleDateString('de-AT', { year:'numeric', month:'short', day:'2-digit' });
+      document.getElementById('as-of-date').textContent = new Date('2025-09-12').toLocaleDateString('de-AT', { year:'numeric', month:'short', day:'2-digit' });
       initLang();
 
       map = L.map('map',{scrollWheelZoom:true, zoomControl:true}).setView([48.4,16.3], 9);
