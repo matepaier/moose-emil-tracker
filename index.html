@@ -34,6 +34,14 @@
 
     /* Lang switcher */
     .lang-switcher button.active { border-color:#a1a1aa; }
+    
+    /* heli icon */
+    .helicopter-icon {
+      font-size: 22px;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(0,0,0,.45);
+    }
+
 
     /* Footer icon buttons */
     .icon-btn { display:inline-flex; align-items:center; justify-content:center; height:2.25rem; width:2.25rem; border-radius:.75rem; border:1px solid #3f3f46; background:#0a0a0a; color:#e4e4e7; }
@@ -383,7 +391,8 @@
       { "date": "2025-09-20", "dateText": "20. September", "place": "Schiedlberg", "country": "AT", "lat": 48.1069, "lon": 14.2825 },
       { "date": "2025-09-20", "dateText": "20. September", "place": "Neuhofen an der Krems", "country": "AT", "lat": 48.1319, "lon": 14.2308 },
       { "date": "2025-09-21", "dateText": "21. September", "place": "Kremsmünster", "country": "AT", "lat": 48.0542, "lon": 14.1283 },
-      { "date": "2025-09-22", "dateText": "22. September", "place": "Sattledt", "country": "AT", "lat": 48.0733, "lon": 14.0503 }
+      { "date": "2025-09-22", "dateText": "22. September", "place": "Sattledt", "country": "AT", "lat": 48.0733, "lon": 14.0503 },
+      { "date": "2025-09-23", "dateText": "23. September", "place": "Bezirk Rohrbach (Rand Böhmerwald)", "country": "AT", "lat": 48.73194, "lon": 13.83333 }
     ];
 
     // News (static – titles stay in original language)
@@ -414,7 +423,16 @@
     ];
 
     const colors = { CZ: '#60a5fa', SK: '#a78bfa', AT: '#f43f5e' };
+        const helicopterIcon = L.divIcon({
+      className: 'helicopter-icon',
+      html: '🚁',
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+
     let markers = []; let line; let map;
+    let dashLine = null;      // gestricheltes Segment (Sattledt -> Böhmerwald)
+    let helicopterMarker = null; // 🚁 Marker in der Mitte
     let instaLoaded = false;
     window.__currentLang = "de";
     let currentFilter = localStorage.getItem('filter') || 'all';
@@ -552,6 +570,42 @@
       });
 
       if(latlngs.length>=2){ line=L.polyline(latlngs,{color:'#f43f5e',weight:3,opacity:0.7}).addTo(map); }
+      // --- Spezialsegment: Betäubung & Transfer Sattledt -> Böhmerwald ---
+        // Vorher alte Spezial-Layer entfernen (bei Re-Render)
+        if (dashLine) { map.removeLayer(dashLine); dashLine = null; }
+        if (helicopterMarker) { map.removeLayer(helicopterMarker); helicopterMarker = null; }
+        
+        // Punkte aus den Rohdaten holen (unabhängig vom aktuellen Filter)
+        const fromPt = rawPoints.find(p => p.place === 'Sattledt' && p.date === '2025-09-22');
+        const toPt   = rawPoints.find(p => p.place.startsWith('Bezirk Rohrbach') && p.date === '2025-09-23');
+        
+        if (fromPt && toPt && Number.isFinite(fromPt.lat) && Number.isFinite(fromPt.lon) && Number.isFinite(toPt.lat) && Number.isFinite(toPt.lon)) {
+          const fromLL = [fromPt.lat, fromPt.lon];
+          const toLL   = [toPt.lat, toPt.lon];
+        
+          // gestrichelte Verbindung
+          dashLine = L.polyline([fromLL, toLL], {
+            color: '#9ca3af',        // hellgrau
+            weight: 3,
+            opacity: 0.9,
+            dashArray: '6 8'         // gestrichelt
+          }).addTo(map).bringToFront();
+        
+          // Mittelpunkt für den 🚁
+          const mid = [(fromPt.lat + toPt.lat)/2, (fromPt.lon + toPt.lon)/2];
+          helicopterMarker = L.marker(mid, { icon: helicopterIcon, title: 'Hubschrauber-Transport' })
+            .addTo(map)
+            .bindPopup(`
+              <div class="text-sm">
+                <div class="mb-1 text-xs uppercase tracking-wide text-zinc-400">22.–23.09.2025</div>
+                <div class="font-medium">Betäubung & Umsiedlung</div>
+                <p class="mt-1 text-zinc-600">
+                  Emil wurde in der Nähe von Sattledt betäubt und in den Böhmerwald (Tschechien) gebracht.
+                </p>
+              </div>
+            `);
+        }
+
       if(latlngs.length) { map.fitBounds(latlngs,{padding:[30,30]}); }
 
       // Stats
