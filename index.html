@@ -365,14 +365,25 @@
       { date: '2025-08-31', dateText: '31. August', place: 'Perschling', country: 'AT', lat: 48.260200, lon: 15.795800 },
       { date: '2025-08-31', dateText: '31. August', place: 'Kapelln', country: 'AT', lat: 48.2584846, lon: 15.7564358 },
       { date: '2025-09-02', dateText: '02. September', place: 'Maria Jeutendorf', country: 'AT', lat: 48.24454, lon: 15.74262 },
-      { "date": "2025-09-05", "dateText": "05. September", "place": "Pottenbrunn (Radlberg, St. Pölten)", "country": "AT", "lat": 48.24131, "lon": 15.70159 },
+      { date: "2025-09-05", "dateText": "05. September", "place": "Pottenbrunn (Radlberg, St. Pölten)", "country": "AT", "lat": 48.24131, "lon": 15.70159 },
       { "date": "2025-09-06", "dateText": "06. September", "place": "St. Pölten", "country": "AT", "lat": 48.20353, "lon": 15.63817 },
       { "date": "2025-09-09", "dateText": "09. September", "place": "Melk", "country": "AT", "lat": 48.22737, "lon": 15.33186 },
       { "date": "2025-09-09", "dateText": "09. September", "place": "Klein-Pöchlarn (Überquerung der Donau)", "country": "AT", "lat": 48.2202322, "lon": 15.2188862 },
       { "date": "2025-09-10", "dateText": "10. September", "place": "Marbach an der Donau", "country": "AT", "lat": 48.216986, "lon": 15.1525413 },
       { "date": "2025-09-10", "dateText": "10. September", "place": "Krummnußbaum (Donauuferbahn, Überquerung der Donau)", "country": "AT", "lat": 48.208864, "lon": 15.1639272 },
       { "date": "2025-09-13", "dateText": "13. September", "place": "Ferschnitz", "country": "AT", "lat": 48.0946459, "lon": 14.9841098 },
-      { "date": "2025-09-15", "dateText": "15. September", "place": "Sonntagberg", "country": "AT", "lat": 47.9966128, "lon": 14.761004 }
+      { "date": "2025-09-15", "dateText": "15. September", "place": "Sonntagberg", "country": "AT", "lat": 47.9966128, "lon": 14.761004 },
+      { "date": "2025-09-16", "dateText": "16. September", "place": "Rosenau am Sonntagberg", "country": "AT", "lat": 47.9975, "lon": 14.7083 },
+      { "date": "2025-09-17", "dateText": "17. September", "place": "Wolfsbach (Niederösterreich)", "country": "AT", "lat": 48.0619, "lon": 14.6803 },
+      { "date": "2025-09-18", "dateText": "18. September", "place": "Stadt Haag", "country": "AT", "lat": 48.1108, "lon": 14.5653 },
+      { "date": "2025-09-18", "dateText": "18. September", "place": "St. Valentin (Niederösterreich)", "country": "AT", "lat": 48.1667, "lon": 14.5167 },
+      { "date": "2025-09-19", "dateText": "19. September", "place": "Ernsthofen", "country": "AT", "lat": 48.1225, "lon": 14.4331 },
+      { "date": "2025-09-19", "dateText": "19. September", "place": "Kronstorf (Durchquerung der Enns)", "country": "AT", "lat": 48.1208, "lon": 14.4492 },
+      { "date": "2025-09-19", "dateText": "19. September", "place": "Hargelsberg", "country": "AT", "lat": 48.1425, "lon": 14.3933 },
+      { "date": "2025-09-20", "dateText": "20. September", "place": "Schiedlberg", "country": "AT", "lat": 48.1069, "lon": 14.2825 },
+      { "date": "2025-09-20", "dateText": "20. September", "place": "Neuhofen an der Krems", "country": "AT", "lat": 48.1319, "lon": 14.2308 },
+      { "date": "2025-09-21", "dateText": "21. September", "place": "Kremsmünster", "country": "AT", "lat": 48.0542, "lon": 14.1283 },
+      { "date": "2025-09-22", "dateText": "22. September", "place": "Sattledt", "country": "AT", "lat": 48.0733, "lon": 14.0503 }
     ];
 
     // News (static – titles stay in original language)
@@ -629,7 +640,7 @@
 
     window.addEventListener('load', () => {
       // date in chip
-      document.getElementById('as-of-date').textContent = new Date('2025-09-16').toLocaleDateString('de-AT', { year:'numeric', month:'short', day:'2-digit' });
+      document.getElementById('as-of-date').textContent = new Date('2025-09-23').toLocaleDateString('de-AT', { year:'numeric', month:'short', day:'2-digit' });
       initLang();
 
       map = L.map('map',{scrollWheelZoom:true, zoomControl:true}).setView([48.4,16.3], 9);
