@@ -247,7 +247,9 @@
         popupBtn: "Instagram-Posts anzeigen",
         noPosts: "Keine verlinkten Posts für diesen Ort.",
         needCookies: "Um Instagram-Posts anzuzeigen und abzuspielen, bitte Cookies akzeptieren.",
-        acceptAndLoad: "Cookies akzeptieren & Posts laden"
+        acceptAndLoad: "Cookies akzeptieren & Posts laden",
+        helicopterPopupTitle: "Betäubung & Umsiedlung",
+        helicopterPopupText: "Emil wurde in der Nähe von Sattledt betäubt und in den Böhmerwald gebracht.",
       },
       en: {
         metaTitle: "Moose Emil – Travel Tracker (CZ ➜ AT)",
@@ -284,7 +286,9 @@
         popupBtn: "Show Instagram posts",
         noPosts: "No linked posts for this location.",
         needCookies: "To show and play Instagram posts, please accept cookies.",
-        acceptAndLoad: "Accept cookies & load posts"
+        acceptAndLoad: "Accept cookies & load posts",
+        helicopterPopupTitle: "Sedation & Relocation",
+        helicopterPopupText: "Emil was sedated near Sattledt and flown to the Bohemian Forest."
       }
     };
 
@@ -594,16 +598,17 @@
           // Mittelpunkt für den 🚁
           const mid = [(fromPt.lat + toPt.lat)/2, (fromPt.lon + toPt.lon)/2];
           helicopterMarker = L.marker(mid, { icon: helicopterIcon, title: 'Hubschrauber-Transport' })
-            .addTo(map)
-            .bindPopup(`
-              <div class="text-sm">
-                <div class="mb-1 text-xs uppercase tracking-wide text-zinc-400">22.–23.09.2025</div>
-                <div class="font-medium">Betäubung & Umsiedlung</div>
-                <p class="mt-1 text-zinc-600">
-                  Emil wurde in der Nähe von Sattledt betäubt und in den Böhmerwald (Tschechien) gebracht.
-                </p>
-              </div>
-            `);
+          .addTo(map)
+          .bindPopup(`
+            <div class="text-sm">
+              <div class="mb-1 text-xs uppercase tracking-wide text-zinc-400">22.–23.09.2025</div>
+              <div class="font-medium">${t('helicopterPopupTitle')}</div>
+              <p class="mt-1 popup-text-special">
+                ${t('helicopterPopupText')}
+              </p>
+            </div>
+          `);
+
         }
 
       if(latlngs.length) { map.fitBounds(latlngs,{padding:[30,30]}); }
