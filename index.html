@@ -114,7 +114,7 @@
       <div class="mt-3 flex gap-2">
         <span class="chip" id="chip-source" style="background:#10b98122;border-color:#10b98155;color:#a7f3d0;" data-i18n="chipSource">Quelle: Wikipedia</span>
         <span class="chip" id="chip-updated" style="background:#3b82f622;border-color:#3b82f655;color:#bfdbfe;">
-          <span data-i18n="chipAsOf">Stand:</span>&nbsp;<span id="as-of-date">16 Sep 2025</span>
+          <span data-i18n="chipAsOf">Stand:</span>&nbsp;<span id="as-of-date">03 Okt 2025</span>
         </span>
       </div>
     </div>
@@ -132,6 +132,7 @@
         <button data-filter="AT" role="tab" aria-selected="false" data-i18n="filterAT">Nur Österreich</button>
         <button data-filter="CZ" role="tab" aria-selected="false" data-i18n="filterCZ">Nur Tschechien</button>
         <button data-filter="SK" role="tab" aria-selected="false" data-i18n="filterSK">Nur Slowakei</button>
+        <button data-filter="DE" role="tab" aria-selected="false" data-i18n="filterDE">Nur Deutschland</button>
         <button data-filter="POSTS" role="tab" aria-selected="false" data-i18n="filterPosts">Nur Social-Posts</button>
       </div>
     </div>
@@ -213,11 +214,11 @@
     // ---------- i18n dictionary ----------
     const I18N = {
       de: {
-        metaTitle: "Elch Emil – Reise-Tracker (CZ ➜ AT)",
+        metaTitle: "Elch Emil – Reise Tracker (CZ ➜ AT ➜ DE)",
         metaDescription: "Interaktive Karte der Reise des Elchs Emil von Tschechien nach Österreich anhand öffentlich dokumentierter Sichtungen.",
         badgeLiveTracker: "Live-Tracker",
         heroTitle: "Elch Emil",
-        sectionIntro: "Emil auf Wanderschaft – CZ ➜ AT",
+        sectionIntro: "Emil auf Wanderschaft – CZ ➜ AT ➜ DE",
         sectionIntroText: "Emil ist ein junger Elch, der im Sommer 2025 aus Tschechien über die Grenze nach Österreich wanderte. Hier siehst du seine dokumentierten Sichtungen als Route auf der Karte, inkl. verlinkter Social-Posts.",
         chipSource: "Quelle: Wikipedia",
         chipAsOf: "Stand: ",
@@ -229,6 +230,7 @@
         filterAT: "Nur Österreich",
         filterCZ: "Nur Tschechien",
         filterSK: "Nur Slowakei",
+        filterDE: "Nur Deutschland",
         filterPosts: "Nur Social-Posts",
 
         statLength: "Pfadlänge (Luftlinie)",
@@ -252,11 +254,12 @@
         helicopterPopupText: "Emil wurde in der Nähe von Sattledt betäubt und in den Böhmerwald gebracht.",
       },
       en: {
-        metaTitle: "Moose Emil – Travel Tracker (CZ ➜ AT)",
+        metaTitle: "Moose Emil – Travel Tracker (CZ ➜ AT ➜ DE)",
+        metaTitle: "Moose Emil – Travel Tracker (CZ ➜ AT ➜ DE)",
         metaDescription: "Interactive map of Moose Emil’s journey from the Czech Republic to Austria based on publicly documented sightings.",
         badgeLiveTracker: "Live tracker",
         heroTitle: "Moose Emil",
-        sectionIntro: "Emil on the Move – CZ ➜ AT",
+        sectionIntro: "Emil on the Move – CZ ➜ AT ➜ DE",
         sectionIntroText: "Emil is a young moose who crossed from the Czech Republic into Austria in summer 2025. Here you can see his documented sightings as a route on the map, including linked social posts.",
         chipSource: "Source: Wikipedia",
         chipAsOf: "Updated: ",
@@ -268,6 +271,7 @@
         filterAT: "Show Austria only",
         filterCZ: "Show Czechia only",
         filterSK: "Show Slovakia only",
+        filterDE: "Show Germany only",
         filterPosts: "Social posts only",
 
         statLength: "Path length (as-the-crow-flies)",
@@ -396,11 +400,29 @@
       { "date": "2025-09-20", "dateText": "20. September", "place": "Neuhofen an der Krems", "country": "AT", "lat": 48.1319, "lon": 14.2308 },
       { "date": "2025-09-21", "dateText": "21. September", "place": "Kremsmünster", "country": "AT", "lat": 48.0542, "lon": 14.1283 },
       { "date": "2025-09-22", "dateText": "22. September", "place": "Sattledt", "country": "AT", "lat": 48.0733, "lon": 14.0503 },
-      { "date": "2025-09-23", "dateText": "23. September", "place": "Bezirk Rohrbach (Rand Böhmerwald)", "country": "AT", "lat": 48.73194, "lon": 13.83333 }
+      { "date": "2025-09-23", "dateText": "23. September", "place": "Bezirk Rohrbach (Rand Böhmerwald)", "country": "AT", "lat": 48.73194, "lon": 13.83333 },
+      
+      //DE
+      { "date": "2025-09-24", "dateText": "24. September", "place": "Haidmühle (Bischofsreut)", "country": "DE", "lat": 48.8556, "lon": 13.7345 },
+      { "date": "2025-10-01", "dateText": "1. Oktober", "place": "Lindberg (Buchenau)", "country": "DE", "lat": 49.032212, "lon": 13.327123 },
+      { "date": "2025-10-01", "dateText": "1. Oktober", "place": "Frauenau", "country": "DE", "lat": 48.9830, "lon": 13.3000 }
     ];
 
     // News (static – titles stay in original language)
     const NEWS = [
+    { date: '2025-09-22', source: 'ORF ON (ZIB)', title: 'Elch Emil betäubt und in Freiheit entlassen', url: 'https://on.orf.at/video/14292405/15952651/elch-emil-betaeubt-und-in-freiheit-entlassen' },
+    { date: '2025-09-23', source: 'ooe.ORF.at', title: 'Emil bewegt sich in „richtige Richtung“', url: 'https://ooe.orf.at/stories/3322894/' },
+    { date: '2025-09-24', source: 'ooe.ORF.at', title: 'Emil jetzt in tschechischem Nationalpark', url: 'https://ooe.orf.at/stories/3323112/' },
+    { date: '2025-09-27', source: 'ooe.ORF.at', title: 'Elch Emil im Bayrischen Wald', url: 'https://ooe.orf.at/stories/3323463/' },
+    { date: '2025-09-27', source: 'da Hog’n', title: '„Ein Riesenviech“: Elch „Emil“ im Bayerischen Wald gesichtet', url: 'https://www.hogn.de/2025/09/27/1-da-hogn-geht-um/nachrichten-in-freyung-grafenau/ein-riesenviech-elch-emil-im-bayerischen-wald-gesichtet-bischofsreut-freyung-grafenau/208550' },
+    { date: '2025-09-29', source: 'UNSER RADIO', title: 'Elch „Emil“ aus Österreich ist im Nationalpark Bayerischer Wald unterwegs', url: 'https://www.unserradio.de/elch-emil-aus-oesterreich-ist-im-nationalpark-bayerischer-wald-unterwegs-187975/' },
+    { date: '2025-10-01', source: 'ooe.ORF.at', title: 'Elch Emil: GPS-Tracker offline', url: 'https://ooe.orf.at/stories/3324013/' },
+    { date: '2025-10-01', source: 'idowa', title: 'Auf Video: Elch Emil im Kreis Regen gesichtet', url: 'https://www.idowa.de/regionen/viechtach/landkreis-regen/auf-video-elch-emil-im-kreis-regen-gesichtet-art-358690' },
+    { date: '2025-10-01', source: 'Merkur', title: '„Abstand halten“: Chaos-Elch Emil in Bayern gesichtet – Video zeigt ihn in Gemeinde', url: 'https://www.merkur.de/bayern/nun-herum-elch-emil-in-bayern-gesichtet-in-diesen-regionen-treibt-er-sich-93959903.html' },
+    { date: '2025-10-02', source: 'Süddeutsche Zeitung', title: 'Gestresster Elch Emil soll im Bayerischen Wald zur Ruhe kommen', url: 'https://www.sueddeutsche.de/bayern/elch-emil-bayerischer-wald-oesterreich-li.3320573' },
+    { date: '2025-10-02', source: 'da Hog’n', title: 'Elch Emil geht baden: „Wir waren hellauf begeistert!“', url: 'https://www.hogn.de/2025/10/02/1-da-hogn-geht-um/nachrichten-im-landkreis-regen/elch-emil-geht-baden-wir-waren-hellauf-begeistert-frauenau-trinkwassertalsperre-bayerischer-wald/208780' },
+    { date: '2025-10-03', source: 'Heute.at', title: '„Hellauf begeistert“ – Urlauberin entdeckt Emil in See', url: 'https://www.heute.at/s/hellauf-begeistert-urlauberin-entdeckt-emil-in-see-120135053' },
+    
     { date: '2025-09-22', source: 'DER SPIEGEL', title: 'Elch Emil betäubt und mit GPS im Böhmerwald ausgesetzt', url: 'https://www.spiegel.de/panorama/oesterreich-elch-emil-betaeubt-und-mit-gps-im-boehmerwald-ausgesetzt-a-e9719030-132a-4173-a7d2-fb9fedd52ee8' },
     { date: '2025-09-22', source: 'ZDFheute', title: 'Mehrwöchige Wanderschaft beendet: Elch Emil in Österreich betäubt und umgesiedelt', url: 'https://www.zdfheute.de/panorama/elch-emil-oesterreich-betaeubt-100.html' },
     { date: '2025-09-22', source: 'Kurier', title: 'So liefen Betäubung und Transport von Elch Emil ab', url: 'https://kurier.at/chronik/oberoesterreich/elch-emil-boehmerwald-betaeubt-sattledt-sumava/403086378' },
@@ -426,7 +448,7 @@
       { date: '2025-08-28', source: 'MeinBezirk', title: 'Darum wandert der Star-Elch durch Niederösterreich', url: 'https://www.meinbezirk.at/niederoesterreich/c-lokales/darum-wandert-der-star-elch-durch-niederoesterreich_a7560782' }
     ];
 
-    const colors = { CZ: '#60a5fa', SK: '#a78bfa', AT: '#f43f5e' };
+    const colors = { CZ: '#60a5fa', SK: '#a78bfa', AT: '#f43f5e', DE: '#ffffff' };
         const helicopterIcon = L.divIcon({
       className: 'helicopter-icon',
       html: '🚁',
@@ -527,6 +549,7 @@
         if (mode === 'AT') return p.country === 'AT';
         if (mode === 'CZ') return p.country === 'CZ';
         if (mode === 'SK') return p.country === 'SK';
+        if (mode === 'DE') return p.country === 'DE';
         if (mode === 'POSTS') return Array.isArray(p.posts) && p.posts.length > 0;
         return true; // 'all'
       });
@@ -707,7 +730,7 @@
 
     window.addEventListener('load', () => {
       // date in chip
-      document.getElementById('as-of-date').textContent = new Date('2025-09-23').toLocaleDateString('de-AT', { year:'numeric', month:'short', day:'2-digit' });
+      document.getElementById('as-of-date').textContent = new Date('2025-10-03').toLocaleDateString('de-AT', { year:'numeric', month:'short', day:'2-digit' });
       initLang();
 
       map = L.map('map',{scrollWheelZoom:true, zoomControl:true}).setView([48.4,16.3], 9);
