@@ -129,10 +129,10 @@
       <span class="filter-label text-sm text-zinc-300" data-i18n="filterLabel">Filter:</span>
       <div id="filterGroup" class="segmented w-full sm:w-auto sm:ml-auto" role="tablist" aria-label="Filter">
         <button class="active" data-filter="all" role="tab" aria-selected="true" data-i18n="filterAll">Alle</button>
+        <button data-filter="DE" role="tab" aria-selected="false" data-i18n="filterDE">Nur Deutschland</button>
         <button data-filter="AT" role="tab" aria-selected="false" data-i18n="filterAT">Nur Österreich</button>
         <button data-filter="CZ" role="tab" aria-selected="false" data-i18n="filterCZ">Nur Tschechien</button>
         <button data-filter="SK" role="tab" aria-selected="false" data-i18n="filterSK">Nur Slowakei</button>
-        <button data-filter="DE" role="tab" aria-selected="false" data-i18n="filterDE">Nur Deutschland</button>
         <button data-filter="POSTS" role="tab" aria-selected="false" data-i18n="filterPosts">Nur Social-Posts</button>
       </div>
     </div>
@@ -227,10 +227,10 @@
         /* Filter */
         filterLabel: "Filter:",
         filterAll: "Alle",
+        filterDE: "Nur Deutschland",
         filterAT: "Nur Österreich",
         filterCZ: "Nur Tschechien",
         filterSK: "Nur Slowakei",
-        filterDE: "Nur Deutschland",
         filterPosts: "Nur Social-Posts",
 
         statLength: "Pfadlänge (Luftlinie)",
@@ -268,10 +268,10 @@
         /* Filter */
         filterLabel: "Filter:",
         filterAll: "All",
+        filterDE: "Show Germany only",
         filterAT: "Show Austria only",
         filterCZ: "Show Czechia only",
         filterSK: "Show Slovakia only",
-        filterDE: "Show Germany only",
         filterPosts: "Social posts only",
 
         statLength: "Path length (as-the-crow-flies)",
@@ -546,10 +546,10 @@
 
     function filterData(mode){
       return rawPoints.filter(p => {
+        if (mode === 'DE') return p.country === 'DE';
         if (mode === 'AT') return p.country === 'AT';
         if (mode === 'CZ') return p.country === 'CZ';
         if (mode === 'SK') return p.country === 'SK';
-        if (mode === 'DE') return p.country === 'DE';
         if (mode === 'POSTS') return Array.isArray(p.posts) && p.posts.length > 0;
         return true; // 'all'
       });
